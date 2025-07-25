@@ -42,31 +42,26 @@ skills.forEach(skill => {
 const projects = [
   {
     title: 'Self Monitoring System for Unauthorized Activity (BE Project)',
-    stack: 'Java, Python',
-    desc: 'System for monitoring unauthorized activity.',
-    live: '#',
-    github: '#'
+    stack: '',
+    desc: 'Proctored Exam System for College/University Practical Examinations. Designed to prevent cheating during practical examinations by monitoring and flagging unauthorized activities in real time.'
   },
   {
-    title: 'Proctored Exam System',
-    stack: 'Python, Django',
-    desc: 'Online proctored exam platform.',
-    live: '#',
-    github: '#'
+    title: 'AWS Project - Web Development on EC2 Instances Using User Data',
+    stack: '',
+    desc: 'Development of website on cloud environment (EC2 instance). Automated deployment and configuration of a website on AWS EC2 using user data scripts for seamless cloud provisioning.'
   },
   {
-    title: 'AWS EC2 Apache Web Deployment Project',
-    stack: 'AWS, Apache',
-    desc: 'Automated deployment of Apache web server on EC2.',
-    live: '#',
-    github: '#'
+    title: 'Web Development on EC2 Instances with Apache Server Installation',
+    stack: '',
+    desc: 'Created own virtual machine on cloud. Installed Apache server on a custom EC2 instance and developed a static website for demonstration and learning purposes.'
   }
 ];
 const projectsGrid = document.querySelector('.projects-grid');
+projectsGrid.innerHTML = '';
 projects.forEach(project => {
   const card = document.createElement('div');
   card.className = 'project-card';
-  card.innerHTML = `<h3>${project.title}</h3><p><strong>Stack:</strong> ${project.stack}</p><p>${project.desc}</p><div><a href="${project.live}" target="_blank">Live</a> | <a href="${project.github}" target="_blank">GitHub</a></div>`;
+  card.innerHTML = `<h3>${project.title}</h3><p>${project.desc}</p>`;
   projectsGrid.appendChild(card);
 });
 
@@ -77,9 +72,7 @@ const timeline = [
   { type: 'Certification', title: 'RHCSA' },
   { type: 'Certification', title: 'Cloud Application Developer (NASSCOM)' },
   { type: 'Certification', title: 'Advanced Terraform (LinkedIn)' },
-  { type: 'Certification', title: 'Full Stack Java (Capgemini)' },
-  { type: 'Internship', title: 'Vkraft Software (Integration Developer)' },
-  { type: 'Article', title: 'LinkedIn Blogs on AWS & EC2', link: '#' }
+  { type: 'Certification', title: 'Full Stack Java (Capgemini)' }
 ];
 const timelineDiv = document.querySelector('.timeline');
 timeline.forEach(item => {
