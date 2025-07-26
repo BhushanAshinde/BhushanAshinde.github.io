@@ -86,5 +86,39 @@ timeline.forEach(item => {
   timelineDiv.appendChild(div);
 });
 
+// Certificate Carousel Logic
+const carouselImgs = document.querySelectorAll('.carousel-img');
+const prevBtn = document.querySelector('.carousel-btn.prev');
+const nextBtn = document.querySelector('.carousel-btn.next');
+let currentImg = 0;
+let autoSlideInterval = null;
+
+function showCarouselImg(idx) {
+  carouselImgs.forEach((img, i) => {
+    img.classList.toggle('active', i === idx);
+  });
+}
+function startAutoSlide() {
+  if (autoSlideInterval) clearInterval(autoSlideInterval);
+  autoSlideInterval = setInterval(() => {
+    currentImg = (currentImg + 1) % carouselImgs.length;
+    showCarouselImg(currentImg);
+  }, 3000);
+}
+if (carouselImgs.length) {
+  showCarouselImg(currentImg);
+  startAutoSlide();
+  prevBtn.addEventListener('click', () => {
+    currentImg = (currentImg - 1 + carouselImgs.length) % carouselImgs.length;
+    showCarouselImg(currentImg);
+    startAutoSlide();
+  });
+  nextBtn.addEventListener('click', () => {
+    currentImg = (currentImg + 1) % carouselImgs.length;
+    showCarouselImg(currentImg);
+    startAutoSlide();
+  });
+}
+
 // Placeholder: Add 3D, chart, and animation logic here
 // For advanced features, consider using external JS libraries and update this file accordingly.
