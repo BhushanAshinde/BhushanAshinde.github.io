@@ -4,6 +4,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bhushan Shinde | Portfolio</title>
+  <script>
+    (function () {
+      try {
+        const storedTheme = localStorage.getItem('portfolio-theme');
+        const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const resolvedTheme = storedTheme === 'system'
+          ? (systemDark ? 'dark' : 'light')
+          : (storedTheme || 'dark');
+        document.documentElement.setAttribute('data-theme', resolvedTheme);
+        document.documentElement.classList.add(resolvedTheme === 'light' ? 'light' : 'dark');
+      } catch (error) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        document.documentElement.classList.add('dark');
+      }
+    })();
+  </script>
   <link rel="stylesheet" href="style.css">
   <!-- Add Google Fonts for a modern look -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
@@ -16,11 +32,27 @@
   <nav>
     <ul>
       <li><a href="#home">Home</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#experience">Experience</a></li>
       <li><a href="#skills">Skills</a></li>
       <li><a href="#projects">Projects</a></li>
       <li><a href="#achievements">Achievements</a></li>
       <li><a href="#articles">Articles</a></li>
       <li><a href="#contact">Contact</a></li>
+      <li class="theme-control">
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to light mode" title="Dark Mode">
+          <span class="theme-toggle-track">
+            <span class="theme-toggle-thumb">
+              <span class="theme-toggle-icon" aria-hidden="true">☀️</span>
+            </span>
+          </span>
+        </button>
+        <div class="theme-menu" id="theme-menu" role="menu" aria-label="Theme options">
+          <button class="theme-option active" data-theme="dark" type="button" role="menuitemradio" aria-checked="true">Dark</button>
+          <button class="theme-option" data-theme="light" type="button" role="menuitemradio" aria-checked="false">Light</button>
+          <button class="theme-option" data-theme="system" type="button" role="menuitemradio" aria-checked="false">System</button>
+        </div>
+      </li>
     </ul>
   </nav>
   <section id="home">
@@ -38,13 +70,54 @@
         <p>Skilled ERPNext & Frappe Developer with deep experience architecting, customizing, and deploying enterprise-grade ERP solutions. I specialize in designing scalable backend architectures using Python and Frappe Framework, implementing RESTful APIs, and integrating third-party services for seamless business automation. My work includes advanced server-side scripting (Python, JS), custom DocType creation, and workflow automation for complex modules such as Procurement, Subcontracting, and Inventory.</p>
         <p>I excel at optimizing ERPNext performance through SQL query tuning, MariaDB management, and Linux server administration. My technical toolkit covers Frappe Insights for real-time analytics, custom dashboards, and data visualization, empowering stakeholders with actionable intelligence. I have delivered robust solutions involving role-based access, permission scripting, and automated notifications, ensuring compliance and security.</p>
         <p>Additionally, I am proficient in virtualization (VMware), cloud deployment, and CI/CD pipelines for ERPNext, enabling rapid, reliable delivery in production environments. My expertise extends to troubleshooting, migration, and scaling ERPNext instances for high-availability enterprise use.</p>
-        <a href="#contact" class="hire-me-btn">Hire me &rarr;</a>
+        <div class="about-actions">
+          <a href="#contact" class="hire-me-btn">Hire me &rarr;</a>
+          <button type="button" class="view-resume-btn" data-open-resume aria-label="View resume">View Resume &rarr;</button>
+        </div>
       </div>
       <div class="about-img-container">
         <img src="passport_pic (1).jpg" alt="Bhushan Shinde" class="about-img" />
       </div>
     </div>
   </section>
+
+  <section id="experience" class="experience-section">
+    <div class="experience-header reveal-fade">
+      <p class="eyebrow">MY JOURNEY</p>
+      <h2>From Code to Business Solutions</h2>
+      <p class="section-copy">My career has evolved from software integration and development into techno-functional ERP consulting, where technology meets real-world business processes.</p>
+      <div class="header-line" aria-hidden="true"></div>
+    </div>
+
+    <div class="experience-layout">
+      <div class="experience-timeline-wrap reveal-fade">
+        <div id="experience-timeline" class="experience-timeline" aria-live="polite"></div>
+      </div>
+
+      <aside id="experience-detail" class="experience-detail reveal-fade" aria-live="polite"></aside>
+    </div>
+
+    <div class="career-evolution" aria-label="Career evolution summary">
+      <div class="career-stage reveal-fade">
+        <span class="stage-number">01</span>
+        <h3>Writing Code</h3>
+        <p>Backend &amp; Integration Development</p>
+        <span class="stage-arrow" aria-hidden="true">↓</span>
+      </div>
+      <div class="career-stage reveal-fade">
+        <span class="stage-number">02</span>
+        <h3>Understanding Business</h3>
+        <p>ERP Processes &amp; Requirements</p>
+        <span class="stage-arrow" aria-hidden="true">↓</span>
+      </div>
+      <div class="career-stage reveal-fade">
+        <span class="stage-number">03</span>
+        <h3>Building Solutions</h3>
+        <p>ERP Implementation &amp; Project Leadership</p>
+      </div>
+    </div>
+  </section>
+
   <section id="skills">
     <h2>Skills</h2>
     <div class="skills-grid">
@@ -68,6 +141,11 @@
         <h3>Web Development on EC2 Instances with Apache Server Installation</h3>
         <p><strong>Created Own Virtual Machine on Cloud</strong></p>
         <p>Installed Apache server on a custom EC2 instance and developed a static website for demonstration and learning purposes.</p>
+      </div>
+      <div class="project-card">
+        <h3>Integrated Financial Management Information System (IFMIS)</h3>
+        <p><strong>Enterprise Financial Management Solution</strong></p>
+        <p>Comprehensive system for budgeting, accounting, and financial reporting to streamline fiscal operations and improve transparency.</p>
       </div>
     </div>
   </section>
@@ -126,6 +204,31 @@
       <a href="#" target="_blank">Video Resume</a>
     </div>
   </section>
+  <div class="resume-modal-backdrop hidden" id="resume-modal-backdrop" aria-hidden="true">
+    <div class="resume-modal" role="dialog" aria-modal="true" aria-labelledby="resume-modal-title">
+      <div class="resume-modal-header">
+        <h3 id="resume-modal-title">Bhushan Shinde — Resume</h3>
+        <button type="button" class="resume-modal-close" aria-label="Close resume viewer">×</button>
+      </div>
+
+      <div class="resume-modal-toolbar">
+        <div class="resume-page-meta">
+          <span id="resume-page-indicator">Loading PDF...</span>
+        </div>
+        <div class="resume-controls" aria-label="Resume zoom controls">
+          <button type="button" id="resume-zoom-out" aria-label="Zoom out">−</button>
+          <button type="button" id="resume-zoom-in" aria-label="Zoom in">＋</button>
+        </div>
+        <a id="resume-download" href="public/Bhushan-Shinde-Resume.pdf" class="resume-download-btn" download>Download PDF ↓</a>
+      </div>
+
+      <div class="resume-viewer-wrap">
+        <div id="resume-canvas-container" class="resume-canvas-container" aria-live="polite"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
   <script src="main.js"></script>
   <script>
     // Vanta.js Birds background
