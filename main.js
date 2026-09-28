@@ -582,3 +582,303 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
+const CHATBOT_STORAGE_KEY = 'bhushan-chatbot-messages';
+const chatbotLauncher = document.getElementById('chatbot-launcher');
+const chatbotPanel = document.getElementById('chatbot-panel');
+const chatbotMessages = document.getElementById('chatbot-messages');
+const chatbotInput = document.getElementById('chatbot-input');
+const chatbotSend = document.getElementById('chatbot-send');
+const chatbotClose = document.getElementById('chatbot-close');
+const chatbotClear = document.getElementById('chatbot-clear');
+const chatbotError = document.getElementById('chatbot-error');
+const chatbotSuggestions = document.querySelectorAll('.chatbot-suggestion');
+
+const defaultGreeting = {
+  sender: 'assistant',
+  text: "Hi! 👋 I'm Bhushan's AI Portfolio Assistant. I can tell you about his experience, ERPNext & Frappe expertise, projects, technical skills, and career journey. What would you like to know?",
+  timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+};
+
+function getStoredMessages() {
+  try {
+    const stored = localStorage.getItem(CHATBOT_STORAGE_KEY);
+    return stored ? JSON.parse(stored) : [];
+  } catch (error) {
+    return [];
+  }
+}
+
+function setStoredMessages(messages) {
+  localStorage.setItem(CHATBOT_STORAGE_KEY, JSON.stringify(messages));
+}
+
+function createMessageBubble(sender, text) {
+  const wrapper = document.createElement('div');
+  wrapper.className = `chatbot-message ${sender}`;
+
+  const bubble = document.createElement('div');
+  bubble.className = 'chatbot-bubble';
+  bubble.textContent = text;
+
+  const time = document.createElement('div');
+  time.className = 'chatbot-timestamp';
+  time.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+  wrapper.appendChild(bubble);
+  wrapper.appendChild(time);
+  return wrapper;
+}
+
+function appendMessage(message) {
+  if (!chatbotMessages) return;
+  const msg = createMessageBubble(message.sender, message.text);
+  chatbotMessages.appendChild(msg);
+  chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+}
+
+function renderMessages(messages) {
+  if (!chatbotMessages) return;
+  chatbotMessages.innerHTML = '';
+  messages.forEach((message) => {
+    appendMessage(message);
+  });
+}
+
+function setError(message) {
+  if (!chatbotError) return;
+  chatbotError.textContent = message;
+  chatbotError.hidden = !message;
+}
+
+function clearConversation() {
+  localStorage.removeItem(CHATBOT_STORAGE_KEY);
+  renderMessages([]);
+  setError('');
+  const firstGreeting = defaultGreeting;
+  const welcomeMessages = [{ ...firstGreeting, sender: 'assistant', text: firstGreeting.text }];
+  setStoredMessages(welcomeMessages);
+  renderMessages(welcomeMessages);
+}
+
+function ensureWelcomeState() {
+  const existing = getStoredMessages();
+  if (existing.length === 0) {
+    const welcome = [{ ...defaultGreeting, timestamp: defaultGreeting.timestamp }];
+    setStoredMessages(welcome);
+    renderMessages(welcome);
+  } else {
+    renderMessages(existing);
+  }
+}
+
+function ensureTypingIndicator() {
+  if (!chatbotMessages) return;
+  const indicator = document.createElement('div');
+  indicator.className = 'chatbot-message assistant';
+  indicator.innerHTML = `
+    <div class="chatbot-typing" aria-label="Assistant is typing">
+      <span></span><span></span><span></span>
+    </div>
+  `;
+  chatbotMessages.appendChild(indicator);
+  chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+  return indicator;
+}
+
+function removeTypingIndicator() {
+  const typing = chatbotMessages?.querySelector('.chatbot-typing')?.closest('.chatbot-message');
+  typing?.remove();
+}
+
+function closeChatbot() {
+  if (!chatbotPanel || !chatbotLauncher) return;
+  chatbotPanel.classList.remove('is-open');
+  chatbotPanel.setAttribute('aria-hidden', 'true');
+  chatbotLauncher.setAttribute('aria-expanded', 'false');
+}
+
+function openChatbot() {
+  if (!chatbotPanel || !chatbotLauncher) return;
+  chatbotPanel.classList.add('is-open');
+  chatbotPanel.setAttribute('aria-hidden', 'false');
+  chatbotLauncher.setAttribute('aria-expanded', 'true');
+  setTimeout(() => {
+    chatbotInput?.focus();
+  }, 120);
+}
+
+function toggleChatbot() {
+  if (!chatbotPanel) return;
+  const isOpen = chatbotPanel.classList.contains('is-open');
+  if (isOpen) {
+    closeChatbot();
+  } else {
+    openChatbot();
+  }
+}
+
+function getLocalPortfolioResponse(question) {
+  if (!window.portfolioKnowledge) {
+    return "I don't have that information in Bhushan's portfolio.";
+  }
+
+  const q = question.toLowerCase();
+  const data = window.portfolioKnowledge;
+
+  if (q.includes('who is bhushan') || q.includes('tell me about bhushan') || q.includes('what does bhushan do')) {
+    return `Bhushan Shinde is a ${data.about.role}. He is a skilled ERPNext and Frappe developer focused on ERP implementation, Python backend development, business automation, and enterprise system integration. His portfolio highlights experience across ERPNext customizations, API integrations, and cloud-based deployments.`;
+  }
+
+  if (q.includes('erpnext') || q.includes('frappe')) {
+    return `Bhushan's portfolio shows ERPNext and Frappe experience across ${data.erpnextAndFrappe.modulesWorkedOn.join(', ')}. He has worked with custom DocTypes, client scripts, server scripts, workflows, print formats, reports, SQL, and REST/API integrations. His experience includes ERP implementation, business process customization, and workflow automation.`;
+  }
+
+  if (q.includes('technology') || q.includes('skill') || q.includes('programming')) {
+    return `Bhushan's skills include Python, JavaScript, SQL, HTML/CSS, ERPNext, Frappe Framework, MySQL, MariaDB, MongoDB, AWS, Terraform, Linux, Git, GitHub, Postman, and business-process consulting. His work spans ERP, cloud, database, integration, and project delivery.`;
+  }
+
+  if (q.includes('project')) {
+    return `Bhushan's portfolio includes projects such as the Self Monitoring System for Unauthorized Activity, AWS EC2 deployment projects, and the Integrated Financial Management Information System (IFMIS). These projects reflect work in exam monitoring, cloud deployment, and enterprise financial management.`;
+  }
+
+  if (q.includes('experience') || q.includes('career') || q.includes('role') || q.includes('project lead')) {
+    return `His experience includes software/integration development from 2022–2024 and ERPNext/Frappe consulting from 2024 onward. He also has project lead responsibilities in ERPNext delivery, including requirement gathering, solution design, UAT, stakeholder communication, and process optimization.`;
+  }
+
+  if (q.includes('contact') || q.includes('email') || q.includes('linkedin') || q.includes('github') || q.includes('hire') || q.includes('opportunity')) {
+    return `The public portfolio lists: Email: shindebhushan666@gmail.com; LinkedIn: https://www.linkedin.com/in/bhushann-shinde/; GitHub: https://github.com/BhushanAshinde. The portfolio does not explicitly state current availability for new opportunities.`;
+  }
+
+  if (q.includes('manufacturing') || q.includes('sales') || q.includes('purchase') || q.includes('accounts') || q.includes('inventory') || q.includes('hrms')) {
+    return `Bhushan's ERPNext experience includes work across Sales, Purchase, Accounts, Inventory, Manufacturing, and HRMS modules, as well as workflow configuration, reports, print formats, and system customizations.`;
+  }
+
+  if (q.includes('customize erpnext') || q.includes('customize')) {
+    return `Yes—based on the portfolio, Bhushan has customized ERPNext using custom DocTypes, client scripts, server scripts, workflows, print formats, reports, and API integrations. He also supports business process customization and automation.`;
+  }
+
+  if (q.includes('education') || q.includes('qualification') || q.includes('certificate')) {
+    return `The portfolio includes certifications and training in AWS re/Start, Cloud Application Developer (NASSCOM), Advanced Terraform, Full Stack Java, and ISRO-related recognition. The portfolio does not provide a full academic transcript.`;
+  }
+
+  if (q.includes('available') || q.includes('opportunity') || q.includes('new opportunities')) {
+    return `The portfolio does not explicitly state whether Bhushan is available for new opportunities.`;
+  }
+
+  return "I don't have that information in Bhushan's portfolio.";
+}
+
+async function sendMessage(question) {
+  const trimmed = question.trim();
+  if (!trimmed || !chatbotMessages) return;
+
+  const messages = getStoredMessages();
+  const userMessage = { sender: 'user', text: trimmed, timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) };
+  const nextMessages = [...messages, userMessage];
+  setStoredMessages(nextMessages);
+  renderMessages(nextMessages);
+
+  chatbotInput.value = '';
+  setError('');
+  chatbotSend.disabled = true;
+  const typingIndicator = ensureTypingIndicator();
+
+  try {
+    let answer = null;
+    let response = null;
+
+    try {
+      response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question: trimmed })
+      });
+
+      if (response.ok) {
+        const rawText = await response.text();
+        if (rawText) {
+          try {
+            const payload = JSON.parse(rawText);
+            if (payload?.answer) {
+              answer = payload.answer;
+            }
+          } catch (parseError) {
+            answer = rawText;
+          }
+        }
+      }
+    } catch (fetchError) {
+      answer = null;
+    }
+
+    if (!answer) {
+      answer = getLocalPortfolioResponse(trimmed);
+    }
+
+    const assistantMessage = { sender: 'assistant', text: answer || "I don't have that information in Bhushan's portfolio.", timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) };
+    const finalMessages = [...nextMessages, assistantMessage];
+    setStoredMessages(finalMessages);
+    removeTypingIndicator();
+    renderMessages(finalMessages);
+  } catch (error) {
+    removeTypingIndicator();
+    const fallback = { sender: 'assistant', text: getLocalPortfolioResponse(trimmed), timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) };
+    const finalMessages = [...nextMessages, fallback];
+    setStoredMessages(finalMessages);
+    renderMessages(finalMessages);
+    setError(error.message || 'Unable to generate a response.');
+  } finally {
+    chatbotSend.disabled = false;
+    chatbotInput?.focus();
+  }
+}
+
+if (chatbotLauncher) {
+  chatbotLauncher.addEventListener('click', toggleChatbot);
+}
+
+if (chatbotClose) {
+  chatbotClose.addEventListener('click', closeChatbot);
+}
+
+if (chatbotClear) {
+  chatbotClear.addEventListener('click', () => {
+    clearConversation();
+  });
+}
+
+if (chatbotSuggestions) {
+  chatbotSuggestions.forEach((button) => {
+    button.addEventListener('click', () => {
+      const question = button.dataset.question || '';
+      if (question) {
+        openChatbot();
+        chatbotInput.value = question;
+        chatbotInput.focus();
+      }
+    });
+  });
+}
+
+if (chatbotInput) {
+  chatbotInput.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      sendMessage(chatbotInput.value);
+    }
+  });
+}
+
+if (chatbotSend) {
+  chatbotSend.addEventListener('click', () => sendMessage(chatbotInput.value));
+}
+
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' && chatbotPanel && chatbotPanel.classList.contains('is-open')) {
+    closeChatbot();
+  }
+});
+
+ensureWelcomeState();
+closeChatbot();
+

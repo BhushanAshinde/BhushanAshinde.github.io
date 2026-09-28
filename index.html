@@ -20,7 +20,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=20260928">
   <!-- Add Google Fonts for a modern look -->
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <!-- Vanta.js Bird background -->
@@ -228,8 +228,50 @@
     </div>
   </div>
 
+  <div class="chatbot-widget" aria-live="polite">
+    <button class="chatbot-launcher" id="chatbot-launcher" type="button" aria-label="Open AI portfolio assistant" aria-expanded="false">
+      <span class="chatbot-launcher-badge">AI</span>
+      <span class="chatbot-launcher-label">Ask Bhushan</span>
+    </button>
+
+    <div class="chatbot-panel" id="chatbot-panel" role="dialog" aria-modal="false" aria-labelledby="chatbot-title" aria-hidden="true">
+      <div class="chatbot-header">
+        <div class="chatbot-header-main">
+          <div class="chatbot-avatar" aria-hidden="true">B</div>
+          <div class="chatbot-header-text">
+            <h3 id="chatbot-title">Bhushan Shinde</h3>
+            <p><span class="chatbot-status-dot" aria-hidden="true"></span> AI Portfolio Assistant</p>
+          </div>
+        </div>
+        <div class="chatbot-header-actions">
+          <button type="button" class="chatbot-clear" id="chatbot-clear" aria-label="Clear conversation">Clear</button>
+          <button type="button" class="chatbot-close" id="chatbot-close" aria-label="Close chat window">×</button>
+        </div>
+      </div>
+
+      <div class="chatbot-suggestions" id="chatbot-suggestions" aria-label="Suggested questions">
+        <button type="button" class="chatbot-suggestion" data-question="Tell me about Bhushan">Tell me about Bhushan</button>
+        <button type="button" class="chatbot-suggestion" data-question="What is his ERPNext experience?">ERPNext experience</button>
+        <button type="button" class="chatbot-suggestion" data-question="What technologies does he work with?">Technical skills</button>
+        <button type="button" class="chatbot-suggestion" data-question="Tell me about his projects">Projects</button>
+        <button type="button" class="chatbot-suggestion" data-question="What is his professional experience?">Experience</button>
+        <button type="button" class="chatbot-suggestion" data-question="How can I contact him?">Contact</button>
+      </div>
+
+      <div class="chatbot-messages" id="chatbot-messages" aria-live="polite"></div>
+
+      <div class="chatbot-compose">
+        <textarea id="chatbot-input" rows="1" placeholder="Ask about experience, ERPNext, skills, or projects..." aria-label="Type your message"></textarea>
+        <button type="button" id="chatbot-send" class="chatbot-send" aria-label="Send message">Send</button>
+      </div>
+
+      <p class="chatbot-error" id="chatbot-error" role="alert" hidden></p>
+    </div>
+  </div>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-  <script src="main.js"></script>
+  <script src="portfolioKnowledge.js"></script>
+  <script src="main.js?v=20260928"></script>
   <script>
     // Vanta.js Birds background
     VANTA.BIRDS({
