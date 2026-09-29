@@ -733,7 +733,7 @@ function getLocalPortfolioResponse(question) {
     return `Bhushan's portfolio shows ERPNext and Frappe experience across ${data.erpnextAndFrappe.modulesWorkedOn.join(', ')}. He has worked with custom DocTypes, client scripts, server scripts, workflows, print formats, reports, SQL, and REST/API integrations. His experience includes ERP implementation, business process customization, and workflow automation.`;
   }
 
-  if (q.includes('technology') || q.includes('skill') || q.includes('programming')) {
+  if (q.includes('tech') || q.includes('stack') || q.includes('skill') || q.includes('programming')) {
     return `Bhushan's skills include Python, JavaScript, SQL, HTML/CSS, ERPNext, Frappe Framework, MySQL, MariaDB, MongoDB, AWS, Terraform, Linux, Git, GitHub, Postman, and business-process consulting. His work spans ERP, cloud, database, integration, and project delivery.`;
   }
 
@@ -878,6 +878,53 @@ document.addEventListener('keydown', (event) => {
     closeChatbot();
   }
 });
+
+const contactForm = document.getElementById('contact-form');
+const contactFormStatus = document.getElementById('contact-form-status');
+
+if (contactForm && contactFormStatus) {
+  contactForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const submitButton = contactForm.querySelector('button[type="submit"]');
+    submitButton.disabled = true;
+    contactFormStatus.hidden = false;
+    contactFormStatus.className = 'contact-form-status';
+    contactFormStatus.textContent = 'Sending your message...';
+
+    try {
+      const response = await fetch(contactForm.action, {
+        method: 'POST',
+        body: new FormData(contactForm),
+        headers: { Accept: 'application/json' }
+      });
+
+      if (!response.ok) {
+        throw new Error('Contact form endpoint rejected the submission.');
+      }
+
+      contactFormStatus.classList.add('is-success');
+      contactFormStatus.textContent = 'Your message was sent. Thank you for reaching out.';
+      contactForm.reset();
+    } catch (error) {
+      contactFormStatus.classList.add('is-error');
+      const formData = new FormData(contactForm);
+      const subject = encodeURIComponent(`Portfolio contact: ${formData.get('name') || 'New message'}`);
+      const body = encodeURIComponent(
+        `Name: ${formData.get('name') || ''}\nEmail: ${formData.get('email') || ''}\n\n${formData.get('message') || ''}`
+      );
+      const emailLink = document.createElement('a');
+      emailLink.href = `mailto:shindebhushan666@gmail.com?subject=${subject}&body=${body}`;
+      emailLink.textContent = 'Send via email';
+      contactFormStatus.replaceChildren(
+        document.createTextNode('Your message could not be sent through the form. '),
+        emailLink,
+        document.createTextNode(' opens a prefilled email.')
+      );
+    } finally {
+      submitButton.disabled = false;
+    }
+  });
+}
 
 ensureWelcomeState();
 closeChatbot();

@@ -184,7 +184,9 @@ const portfolioKnowledge = {
   availability: 'The portfolio does not explicitly state availability for new opportunities.'
 };
 
-window.portfolioKnowledge = portfolioKnowledge;
+if (typeof window !== 'undefined') {
+  window.portfolioKnowledge = portfolioKnowledge;
+}
 
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = { portfolioKnowledge };

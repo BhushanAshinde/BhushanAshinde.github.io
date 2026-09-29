@@ -69,7 +69,6 @@ section {
   position: relative;
   z-index: 2;
 }
-}
 .home-content {
   text-align: center;
   margin-top: 8rem;
@@ -198,6 +197,31 @@ section {
 #contact-form button:hover {
   background: linear-gradient(90deg, #00eaff 0%, #00bfae 100%);
   color: #00eaff;
+}
+#contact-form button:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+.contact-form-status {
+  max-width: 400px;
+  margin: -1rem auto 2rem;
+  color: var(--foreground);
+  text-align: center;
+}
+.contact-form-status.is-success {
+  color: #16c784;
+}
+.contact-form-status.is-error {
+  color: #ff7373;
+}
+.contact-form-status a {
+  color: var(--accent);
+  font-weight: 700;
+  text-decoration-color: currentColor;
+  text-underline-offset: 0.2em;
+}
+.contact-form-status a:hover {
+  color: var(--foreground);
 }
 .contact-links {
   display: flex;

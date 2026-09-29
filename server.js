@@ -59,7 +59,7 @@ function buildContextForQuestion(question) {
   if (q.includes('experience') || q.includes('career') || q.includes('job') || q.includes('role') || q.includes('project lead')) include.push('experience');
   if (q.includes('erpnext') || q.includes('frappe') || q.includes('doc') || q.includes('custom') || q.includes('module') || q.includes('manufacturing') || q.includes('sales') || q.includes('purchase') || q.includes('accounts') || q.includes('inventory') || q.includes('hrms') || q.includes('india')) include.push('erpnext');
   if (q.includes('project') || q.includes('work') || q.includes('implementation')) include.push('projects');
-  if (q.includes('skill') || q.includes('technology') || q.includes('language') || q.includes('programming') || q.includes('cloud') || q.includes('aws') || q.includes('terraform') || q.includes('sql')) include.push('skills');
+  if (q.includes('skill') || q.includes('tech') || q.includes('stack') || q.includes('language') || q.includes('programming') || q.includes('cloud') || q.includes('aws') || q.includes('terraform') || q.includes('sql')) include.push('skills');
   if (q.includes('contact') || q.includes('email') || q.includes('linkedin') || q.includes('github') || q.includes('reach') || q.includes('hire') || q.includes('opportunity') || q.includes('available')) include.push('contact');
   if (q.includes('education') || q.includes('qualification') || q.includes('certificate') || q.includes('certification')) include.push('education');
 
@@ -94,7 +94,7 @@ function buildLocalResponse(question) {
     return `Bhushan's portfolio shows ERPNext and Frappe experience across ${portfolioKnowledge.erpnextAndFrappe.modulesWorkedOn.join(', ')}. He has worked with custom DocTypes, client scripts, server scripts, workflows, print formats, reports, SQL, and REST/API integrations. His experience includes ERP implementation, business process customization, and workflow automation.`;
   }
 
-  if (q.includes('technology') || q.includes('skill') || q.includes('programming')) {
+  if (q.includes('tech') || q.includes('stack') || q.includes('skill') || q.includes('programming')) {
     return `Bhushan's skills include Python, JavaScript, SQL, HTML/CSS, ERPNext, Frappe Framework, MySQL, MariaDB, MongoDB, AWS, Terraform, Linux, Git, GitHub, Postman, and business-process consulting. His work spans ERP, cloud, database, integration, and project delivery.`;
   }
 
